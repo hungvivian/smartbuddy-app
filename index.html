@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartBuddy 智学宝 - AI-Powered Smart Learning Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .kid-friendly-bg {
+            background: linear-gradient(135deg, 
+                #FFF3E0 0%,   /* Warm cream */
+                #FFE0B2 25%,  /* Light orange */
+                #E1F5FE 50%,  /* Soft blue */
+                #F3E5F5 75%,  /* Light purple */
+                #E8F5E8 100%  /* Gentle green */
+            );
+            animation: gentle-float 6s ease-in-out infinite;
+        }
+        
+        @keyframes gentle-float {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .cartoon-card {
+            background: linear-gradient(145deg, 
+                rgba(255, 255, 255, 0.9) 0%,
+                rgba(255, 248, 240, 0.95) 100%
+            );
+            backdrop-filter: blur(10px);
+            box-shadow: 
+                0 20px 40px rgba(255, 165, 0, 0.15),
+                0 8px 25px rgba(147, 51, 234, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .fun-button {
+            background: linear-gradient(45deg, #FF9A56, #FF6B9D);
+            box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .fun-button:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(255, 107, 157, 0.4);
+        }
+        
+        .secondary-button {
+            background: linear-gradient(45deg, #4ECDC4, #45B7D1);
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+        }
+        
+        .secondary-button:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(78, 205, 196, 0.4);
+        }
+        
+        .robot-emoji {
+            filter: drop-shadow(0 4px 8px rgba(255, 165, 0, 0.3));
+            animation: bounce-robot 2s ease-in-out infinite;
+        }
+        
+        @keyframes bounce-robot {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        .star-decoration {
+            animation: twinkle 3s ease-in-out infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+        
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 10s infinite ease-in-out;
+        }
+        
+        .shape:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .shape:nth-child(2) { left: 20%; animation-delay: 2s; }
+        .shape:nth-child(3) { left: 70%; animation-delay: 4s; }
+        .shape:nth-child(4) { left: 80%; animation-delay: 6s; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); }
+            50% { transform: translateY(-100vh) rotate(180deg); }
+        }
+    </style>
+</head>
+<body class="font-sans kid-friendly-bg min-h-screen relative">
+    
+    <!-- Floating Background Shapes -->
+    <div class="floating-shapes">
+        <div class="shape text-6xl">🚀</div>
+        <div class="shape text-5xl">⭐</div>
+        <div class="shape text-4xl">🎯</div>
+        <div class="shape text-5xl">🎨</div>
+    </div>
+    
+    <!-- Welcome Screen -->
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="cartoon-card rounded-3xl p-8 w-full max-w-md text-center relative overflow-hidden">
+            <!-- Decorative stars -->
+            <div class="absolute top-4 left-4 star-decoration text-yellow-400 text-2xl">⭐</div>
+            <div class="absolute top-6 right-6 star-decoration text-pink-400 text-xl">✨</div>
+            <div class="absolute bottom-6 left-6 star-decoration text-blue-400 text-xl">💫</div>
+            
+            <div class="robot-emoji text-6xl mb-4">🤖</div>
+            <h1 class="text-3xl font-bold text-orange-600 mb-2">🤖 SmartBuddy</h1>
+            <h2 class="text-xl font-semibold text-blue-500 mb-4">智学宝</h2>
+            <p class="text-gray-700 mb-2 font-medium">AI-Powered Smart Learning Platform</p>
+            <p class="text-gray-600 mb-6 text-sm">AI智能学习平台<br>Testing Airtable Connection...</p>
+            
+            <div id="connectionStatus" class="p-4 rounded-lg mb-6 bg-blue-50">
+                <div class="text-lg font-semibold text-blue-800">🔄 Testing Connection...</div>
+                <div class="text-sm text-blue-600 mt-2">Please wait while we connect to your Airtable database</div>
+            </div>
+            
+            <div class="space-y-4">
+                <button onclick="testConnection()" class="w-full fun-button text-white py-3 px-6 rounded-xl font-semibold">
+                    🔄 Test Again
+                </button>
+                <button onclick="showFullApp()" class="w-full secondary-button text-white py-3 px-6 rounded-xl font-semibold">
+                    📱 View Full App Demo
+                </button>
+            </div>
+            
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-500">
+                    🤖 Next-Generation Learning Technology<br>
+                    Powered by AI & Gamification
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Your Airtable credentials
+        const AIRTABLE_CONFIG = {
+            baseId: 'appzbq4Zom94iCItg',
+            apiKey: 'patuNpUG5LMv5mdbb.b5de7b9dd3a7c8207ad612df50485760e4f07061e15649ae57802fbffe9653b3'
+        };
+
+        // Test Airtable connection
+        async function testConnection() {
+            const statusDiv = document.getElementById('connectionStatus');
+            
+            try {
+                statusDiv.innerHTML = `
+                    <div class="text-lg font-semibold text-blue-800">🔄 Testing Connection...</div>
+                    <div class="text-sm text-blue-600 mt-2">Connecting to Base ID: ${AIRTABLE_CONFIG.baseId.substring(0, 10)}...</div>
+                `;
+
+                // Test Questions table
+                const questionsUrl = `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/Questions`;
+                console.log('Testing URL:', questionsUrl);
+                
+                const response = await fetch(questionsUrl, {
+                    headers: {
+                        'Authorization': `Bearer ${AIRTABLE_CONFIG.apiKey}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log('Response status:', response.status);
+                console.log('Response ok:', response.ok);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const recordCount = data.records ? data.records.length : 0;
+                    
+                    console.log('Data received:', data);
+                    console.log('Record count:', recordCount);
+
+                    if (recordCount > 0) {
+                        // SUCCESS - Found data
+                        statusDiv.innerHTML = `
+                            <div class="text-lg font-semibold text-green-800">✅ CONNECTION SUCCESS!</div>
+                            <div class="text-sm text-green-600 mt-2">
+                                📊 Found ${recordCount} questions in your database<br>
+                                🎉 Your Airtable is working perfectly!
+                            </div>
+                        `;
+                        statusDiv.className = 'p-4 rounded-lg mb-6 bg-green-50';
+                        
+                        // Show success alert
+                        setTimeout(() => {
+                            alert(`🎉 FANTASTIC!\n\nYour Airtable connection is working!\n\n📊 Data found:\n• ${recordCount} questions in your database\n• Base ID: ${AIRTABLE_CONFIG.baseId}\n• Connection: Successful\n\n✅ Next steps:\n1. Add more questions to Airtable\n2. Create Gifts table\n3. Deploy to live domain\n4. Set up Stripe payments`);
+                        }, 1000);
+                    } else {
+                        // SUCCESS but no data
+                        statusDiv.innerHTML = `
+                            <div class="text-lg font-semibold text-yellow-800">⚠️ CONNECTED BUT EMPTY</div>
+                            <div class="text-sm text-yellow-600 mt-2">
+                                ✅ Connection works, but no questions found<br>
+                                📝 Please add data to your Questions table
+                            </div>
+                        `;
+                        statusDiv.className = 'p-4 rounded-lg mb-6 bg-yellow-50';
+                        
+                        setTimeout(() => {
+                            alert(`⚠️ CONNECTION WORKS BUT NO DATA\n\nYour Airtable connection is successful!\n\nBut your Questions table is empty (${recordCount} records)\n\n📋 To fix this:\n1. Go to your Airtable base\n2. Import the CSV file I provided earlier\n3. Make sure table is named 'Questions'\n4. Test again`);
+                        }, 1000);
+                    }
+                } else {
+                    // Connection failed
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
+                    
+                    statusDiv.innerHTML = `
+                        <div class="text-lg font-semibold text-red-800">❌ CONNECTION FAILED</div>
+                        <div class="text-sm text-red-600 mt-2">
+                            Error ${response.status}: ${response.statusText}<br>
+                            Check your credentials and table setup
+                        </div>
+                    `;
+                    statusDiv.className = 'p-4 rounded-lg mb-6 bg-red-50';
+                    
+                    setTimeout(() => {
+                        alert(`❌ CONNECTION FAILED\n\nError: ${response.status} - ${response.statusText}\n\n🔍 Check:\n1. Base ID: ${AIRTABLE_CONFIG.baseId}\n2. API token permissions\n3. Table named 'Questions' exists\n4. Token has 'read' permission\n\nTry regenerating your API token if needed.`);
+                    }, 1000);
+                }
+
+            } catch (error) {
+                console.error('Network error:', error);
+                
+                statusDiv.innerHTML = `
+                    <div class="text-lg font-semibold text-red-800">❌ NETWORK ERROR</div>
+                    <div class="text-sm text-red-600 mt-2">
+                        ${error.message}<br>
+                        Check your internet connection
+                    </div>
+                `;
+                statusDiv.className = 'p-4 rounded-lg mb-6 bg-red-50';
+                
+                setTimeout(() => {
+                    alert(`❌ NETWORK ERROR\n\nError: ${error.message}\n\n🔍 Check:\n1. Internet connection\n2. Browser permissions\n3. Firewall settings\n4. Try refreshing the page`);
+                }, 1000);
+            }
+        }
+
+        // Show full app demo
+        function showFullApp() {
+            alert('🤖 FULL SMARTBUDDY 智学宝 DEMO\n\nTo see the complete SmartBuddy app:\n\n1. First ensure Airtable connection works\n2. Add Questions and Gifts data\n3. I can provide the full app code\n4. Deploy to live domain\n\nFor now, focus on getting the database connection working!');
+        }
+
+        // Auto-test on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page loaded, testing Airtable connection...');
+            setTimeout(testConnection, 2000);
+        });
+    </script>
+</body>
+</html>
