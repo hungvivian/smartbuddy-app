@@ -1,0 +1,2494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartBuddy - Smart Learning for Kids</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#5D5CDE">
+    <meta name="description" content="AI-powered learning platform for kids K1-P6. Interactive quizzes, rewards system, and progress tracking.">
+    <meta name="keywords" content="kids learning, education app, quiz games, children education, K1 K2 K3 Primary school">
+    
+
+    
+    <!-- iOS PWA -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="SmartBuddy">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+    
+    <!-- Favicons -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+    
+    <!-- Scripts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* ULTRA-AGGRESSIVE reset for iframe environments */
+        html {
+            margin: 0 !important;
+            padding: 0 !important;
+            height: 100vh !important;
+            box-sizing: border-box !important;
+            border: none !important;
+            outline: none !important;
+            overflow-x: hidden !important;
+        }
+        
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+            padding-top: 0 !important;
+            margin-top: 0 !important;
+            position: relative !important;
+            top: 0 !important;
+            left: 0 !important;
+            height: 100vh !important;
+            border: none !important;
+            outline: none !important;
+            transform: translateY(0) !important;
+        }
+        
+        /* Remove any potential browser default margins/padding */
+        * {
+            box-sizing: border-box;
+        }
+        
+        /* FIXED HEADER - Clean and Simple */
+        header {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100vw !important;
+            z-index: 9999 !important;
+            background: rgba(255, 255, 255, 0.9) !important;
+            backdrop-filter: blur(8px) !important;
+            border: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            transform: none !important;
+        }
+        
+        /* Body margin to account for fixed header */
+        body {
+            padding-top: 80px !important;
+        }
+        
+        /* Main content starts below header */
+        main {
+            margin-top: 0 !important;
+            padding-top: 1rem !important;
+        }
+        
+        .kid-friendly-bg {
+            background: linear-gradient(135deg, 
+                #FFF3E0 0%,   /* Warm cream */
+                #FFE0B2 25%,  /* Light orange */
+                #E1F5FE 50%,  /* Soft blue */
+                #F3E5F5 75%,  /* Light purple */
+                #E8F5E8 100%  /* Gentle green */
+            );
+            animation: gentle-float 6s ease-in-out infinite;
+        }
+        
+        @keyframes gentle-float {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .cartoon-card {
+            background: linear-gradient(145deg, 
+                rgba(255, 255, 255, 0.9) 0%,
+                rgba(255, 248, 240, 0.95) 100%
+            );
+            backdrop-filter: blur(10px);
+            box-shadow: 
+                0 20px 40px rgba(255, 165, 0, 0.15),
+                0 8px 25px rgba(147, 51, 234, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .fun-button {
+            background: linear-gradient(45deg, #FF9A56, #FF6B9D);
+            box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .fun-button:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(255, 107, 157, 0.4);
+        }
+        
+        .secondary-button {
+            background: linear-gradient(45deg, #10b981, #059669) !important;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important;
+            transition: all 0.3s ease !important;
+            border: none !important;
+            display: inline-block !important;
+            cursor: pointer !important;
+            color: white !important;
+        }
+        
+        .secondary-button:hover {
+            transform: translateY(-2px) scale(1.05) !important;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5) !important;
+            background: linear-gradient(45deg, #059669, #047857) !important;
+        }
+        
+        .robot-emoji {
+            filter: drop-shadow(0 4px 8px rgba(255, 165, 0, 0.3));
+            animation: bounce-robot 2s ease-in-out infinite;
+        }
+        
+        @keyframes bounce-robot {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        .star-decoration {
+            animation: twinkle 3s ease-in-out infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+        
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 10s infinite ease-in-out;
+        }
+        
+        .shape:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .shape:nth-child(2) { left: 20%; animation-delay: 2s; }
+        .shape:nth-child(3) { left: 70%; animation-delay: 4s; }
+        .shape:nth-child(4) { left: 80%; animation-delay: 6s; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); }
+            50% { transform: translateY(-100vh) rotate(180deg); }
+        }
+        
+        /* Dark Mode Styles */
+        .dark {
+            color-scheme: dark;
+        }
+        
+        .dark .kid-friendly-bg {
+            background: linear-gradient(135deg, 
+                #1a1a2e 0%,   /* Dark navy */
+                #16213e 25%,  /* Deep blue */
+                #0f3460 50%,  /* Dark blue */
+                #533483 75%,  /* Dark purple */
+                #16537e 100%  /* Dark teal */
+            );
+        }
+        
+        .dark .cartoon-card {
+            background: linear-gradient(145deg, 
+                rgba(30, 30, 30, 0.95) 0%,
+                rgba(40, 40, 40, 0.98) 100%
+            );
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .dark .bg-white {
+            background-color: #2d2d2d !important;
+        }
+        
+        .dark .text-gray-800 {
+            color: #e5e5e5 !important;
+        }
+        
+        .dark .text-gray-700 {
+            color: #d1d1d1 !important;
+        }
+        
+        .dark .text-gray-600 {
+            color: #b8b8b8 !important;
+        }
+        
+        .dark .text-gray-500 {
+            color: #9ca3af !important;
+        }
+        
+        /* Fix dark mode text visibility */
+        .dark h2, .dark h3, .dark h4, .dark p, .dark div, .dark span, .dark button {
+            color: #e5e5e5 !important;
+        }
+        
+        .dark .fun-button, .dark .secondary-button {
+            color: white !important;
+        }
+        
+        .dark .bg-gray-50 {
+            background-color: #374151 !important;
+        }
+        
+        .dark .bg-gray-100 {
+            background-color: #4b5563 !important;
+        }
+        
+        .dark .bg-gray-200 {
+            background-color: #6b7280 !important;
+        }
+        
+        .dark .border-gray-200 {
+            border-color: #4b5563 !important;
+        }
+        
+        .dark .border-gray-300 {
+            border-color: #6b7280 !important;
+        }
+        
+        .dark header {
+            background: rgba(30, 30, 30, 0.9) !important;
+        }
+        
+        .dark .bg-blue-50 {
+            background-color: #1e3a8a !important;
+        }
+        
+        .dark .bg-green-50 {
+            background-color: #166534 !important;
+        }
+        
+        .dark .bg-yellow-50 {
+            background-color: #a16207 !important;
+        }
+        
+        .dark .bg-red-50 {
+            background-color: #991b1b !important;
+        }
+        
+        .dark .bg-purple-50 {
+            background-color: #7c3aed !important;
+        }
+    </style>
+</head>
+<body class="font-sans kid-friendly-bg min-h-screen relative">
+    
+    <!-- Header -->
+    <header class="bg-white/90 backdrop-blur-sm shadow-lg">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="robot-emoji text-3xl">🤖</div>
+                <div id="appHeader">
+                    <h1 class="text-xl font-bold text-orange-600">SmartBuddy</h1>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-purple-600" id="userPoints">0</div>
+                    <div class="text-xs text-gray-600">Points</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-green-600" id="userLevel">1</div>
+                    <div class="text-xs text-gray-600">Level</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl" id="streakFire">🔥</div>
+                    <div class="text-xs text-gray-600" id="streakCount">0 day streak</div>
+                </div>
+                <button onclick="showWelcome()" class="bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 text-white w-12 h-12 rounded-full transition-all duration-300 hover:transform hover:scale-105 flex items-center justify-center text-2xl">
+                    🏠
+                </button>
+                <button onclick="showSettings()" class="bg-white hover:bg-gray-50 text-gray-600 border-2 border-gray-200 hover:border-gray-300 w-12 h-12 rounded-full transition-all duration-300 hover:transform hover:scale-105 flex items-center justify-center text-3xl shadow-sm">
+                    ⚙️
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Ad Banner for Free Users -->
+    <div id="adBanner" class="hidden bg-gradient-to-r from-blue-500 to-purple-600 text-white text-center py-2 px-4">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <div class="flex-1 text-sm">
+                📺 <span class="font-semibold">Try SmartBuddy Premium!</span> No ads + unlimited learning + exclusive games
+            </div>
+            <button onclick="subscribePremium()" class="bg-white text-purple-600 px-4 py-1 rounded-full text-sm font-bold hover:bg-gray-100 transition-all duration-200">
+                Upgrade Now
+            </button>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 py-8">
+        <!-- Sign Up Section -->
+        <section id="signUpSection" class="text-center mb-8 hidden">
+            <div class="cartoon-card rounded-3xl p-8 mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">
+                    Join SmartBuddy! 🎉
+                </h2>
+                <p class="text-gray-600 mb-8">
+                    Create your account to start your learning adventure!
+                </p>
+                
+                <!-- Sign Up Form -->
+                <div class="max-w-md mx-auto">
+                    <div class="space-y-4 mb-6">
+                        <div class="text-left">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Child's Name:</label>
+                            <input type="text" id="childName" placeholder="Enter your name" 
+                                   class="w-full text-base p-3 border-2 border-purple-200 rounded-xl focus:border-purple-400 bg-white text-gray-800">
+                        </div>
+                        
+                        <div class="text-left">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Parent's Email:</label>
+                            <input type="email" id="parentSignUpEmail" placeholder="parent@email.com" 
+                                   class="w-full text-base p-3 border-2 border-purple-200 rounded-xl focus:border-purple-400 bg-white text-gray-800">
+                        </div>
+                        
+                        <div class="text-left">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Grade Level:</label>
+                            <select id="signUpGradeSelect" class="w-full text-base px-3 py-3 rounded-xl border-2 border-purple-200 focus:border-purple-400 bg-white text-gray-800">
+                                <option value="">Choose your grade...</option>
+                                <option value="K1">🎨 K1</option>
+                                <option value="K2">🌈 K2</option>
+                                <option value="K3">🎭 K3</option>
+                                <option value="Primary1">📚 P1</option>
+                                <option value="Primary2">🔢 P2</option>
+                                <option value="Primary3">🧪 P3</option>
+                                <option value="Primary4">🌟 P4</option>
+                                <option value="Primary5">🚀 P5</option>
+                                <option value="Primary6">🏆 P6</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button onclick="createAccount()" class="w-full fun-button text-white py-4 px-6 rounded-xl font-bold text-lg mb-4">
+                        🚀 Start Learning Journey!
+                    </button>
+                    
+                    <div class="text-center space-y-3">
+                        <button onclick="showLogin()" class="text-purple-600 underline hover:text-purple-800 transition-colors block w-full">
+                            Already have an account? Sign In
+                        </button>
+                        <button onclick="continueAsGuest()" class="text-gray-600 underline hover:text-gray-800 transition-colors text-sm">
+                            👤 Continue as Guest
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Login Section -->
+        <section id="loginSection" class="text-center mb-8 hidden">
+            <div class="cartoon-card rounded-3xl p-8 mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">
+                    Welcome Back! 👋
+                </h2>
+                <p class="text-gray-600 mb-8">
+                    Sign in to continue your learning adventure!
+                </p>
+                
+                <!-- Login Form -->
+                <div class="max-w-md mx-auto">
+                    <div class="space-y-4 mb-6">
+                        <div class="text-left">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Child's Name:</label>
+                            <input type="text" id="loginChildName" placeholder="Enter your name" 
+                                   class="w-full text-base p-3 border-2 border-purple-200 rounded-xl focus:border-purple-400 bg-white text-gray-800">
+                        </div>
+                        
+                        <div class="text-left">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Parent's Email:</label>
+                            <input type="email" id="loginParentEmail" placeholder="parent@email.com" 
+                                   class="w-full text-base p-3 border-2 border-purple-200 rounded-xl focus:border-purple-400 bg-white text-gray-800">
+                        </div>
+                    </div>
+                    
+                    <button onclick="signIn()" class="w-full secondary-button text-white py-4 px-6 rounded-xl font-bold text-lg mb-4">
+                        🏠 Continue Learning!
+                    </button>
+                    
+                    <div class="text-center space-y-2">
+                        <button onclick="showSignUp()" class="text-purple-600 underline hover:text-purple-800 transition-colors block w-full">
+                            New to SmartBuddy? Create Account
+                        </button>
+                        <button onclick="continueAsGuest()" class="text-gray-600 underline hover:text-gray-800 transition-colors text-sm">
+                            👤 Continue as Guest
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Welcome Section -->
+        <section id="welcomeSection" class="text-center mb-8">
+            <div class="cartoon-card rounded-3xl p-8 mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">
+                    Welcome to SmartBuddy! 🤖
+                </h2>
+                <p class="text-gray-600 mb-6">
+                    Ready to learn and earn points? Choose your learning adventure!
+                </p>
+                
+                <!-- Grade Selection -->
+                <div class="mb-6">
+                    <label class="block text-lg font-semibold mb-3 text-gray-800">Select your grade level:</label>
+                    <select id="gradeSelect" class="w-full text-sm px-2 py-1 rounded-lg border-2 border-purple-200 focus:border-purple-400 bg-white text-gray-800" onchange="saveSelectedGrade()">
+                        <option value="">Choose your grade...</option>
+                        <option value="K1">🎨 K1</option>
+                        <option value="K2">🌈 K2</option>
+                        <option value="K3">🎭 K3</option>
+                        <option value="Primary1">📚 P1</option>
+                        <option value="Primary2">🔢 P2</option>
+                        <option value="Primary3">🧪 P3</option>
+                        <option value="Primary4">🌟 P4</option>
+                        <option value="Primary5">🚀 P5</option>
+                        <option value="Primary6">🏆 P6</option>
+                    </select>
+                </div>
+
+                <!-- Subject Selection -->
+                <div class="grid grid-cols-1 gap-4 mb-6">
+                    <button onclick="startQuiz('Math')" class="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white py-4 px-6 rounded-xl font-bold text-lg flex items-center justify-center space-x-3 transition-all duration-300 hover:transform hover:scale-105 shadow-lg">
+                        <span class="text-3xl">➕</span>
+                        <span>Math</span>
+                    </button>
+                    <button onclick="startQuiz('English')" class="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white py-4 px-6 rounded-xl font-bold text-lg flex items-center justify-center space-x-3 transition-all duration-300 hover:transform hover:scale-105 shadow-lg">
+                        <span class="text-3xl">📖</span>
+                        <span>English</span>
+                    </button>
+                    <button onclick="startQuiz('Science')" class="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white py-4 px-6 rounded-xl font-bold text-lg flex items-center justify-center space-x-3 transition-all duration-300 hover:transform hover:scale-105 shadow-lg">
+                        <span class="text-3xl">🔬</span>
+                        <span>Science</span>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <button onclick="showMiniGames()" class="group relative overflow-hidden bg-gradient-to-br from-pink-400 via-purple-400 to-red-500 hover:from-pink-500 hover:via-purple-500 hover:to-red-600 text-white py-8 px-6 rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:transform hover:scale-105 border-2 border-white/20">
+                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div class="relative z-10 flex flex-col items-center space-y-3">
+                            <div class="text-4xl">🎮</div>
+                            <div class="text-xl">Mini Games</div>
+                            <div class="text-sm opacity-90">Play & Earn Points</div>
+                        </div>
+                    </button>
+                    <button onclick="showRewards()" class="group relative overflow-hidden bg-gradient-to-br from-yellow-400 via-orange-400 to-amber-500 hover:from-yellow-500 hover:via-orange-500 hover:to-amber-600 text-white py-8 px-6 rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:transform hover:scale-105 border-2 border-white/20">
+                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div class="relative z-10 flex flex-col items-center space-y-3">
+                            <div class="text-4xl">🎁</div>
+                            <div class="text-xl">View Rewards</div>
+                            <div class="text-sm opacity-90">Spend Your Points</div>
+                        </div>
+                    </button>
+                    <button onclick="showProgress()" class="group relative overflow-hidden bg-gradient-to-br from-indigo-400 via-blue-400 to-purple-500 hover:from-indigo-500 hover:via-blue-500 hover:to-purple-600 text-white py-8 px-6 rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:transform hover:scale-105 border-2 border-white/20">
+                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div class="relative z-10 flex flex-col items-center space-y-3">
+                            <div class="text-4xl">📊</div>
+                            <div class="text-xl">My Progress</div>
+                            <div class="text-sm opacity-90">Track Learning</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quiz Section -->
+        <section id="quizSection" class="hidden">
+            <div class="cartoon-card rounded-3xl p-8">
+                <!-- Quiz Header -->
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex items-center space-x-3">
+                        <span id="subjectEmoji" class="text-3xl">🔢</span>
+                        <div>
+                            <h3 id="quizTitle" class="text-2xl font-bold text-gray-800">Math Quiz</h3>
+                            <p id="quizGrade" class="text-gray-600">Grade 1</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-sm text-gray-600">Question</div>
+                        <div class="text-xl font-bold" id="questionProgress">1 / 5</div>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="w-full bg-gray-200 rounded-full h-3 mb-6">
+                    <div id="progressBar" class="bg-gradient-to-r from-blue-500 to-purple-600 h-3 rounded-full transition-all duration-500" style="width: 20%"></div>
+                </div>
+
+                <!-- Question Display -->
+                <div class="mb-8">
+                    <h4 id="questionText" class="text-xl font-semibold text-gray-800 mb-6">
+                        Loading question...
+                    </h4>
+                    
+                    <!-- Answer Options -->
+                    <div id="answerOptions" class="space-y-3">
+                        <!-- Options will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Quiz Controls -->
+                <div class="flex justify-between">
+                    <button onclick="showWelcome()" class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg">
+                        🏠 Back to Home
+                    </button>
+                    <button id="nextButton" onclick="nextQuestion()" class="fun-button text-white py-2 px-6 rounded-lg opacity-50 cursor-not-allowed" disabled style="display: block;">
+                        Next Question ➡️
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section id="resultsSection" class="hidden">
+            <div class="cartoon-card rounded-3xl p-8 text-center">
+                <div class="text-6xl mb-4" id="resultEmoji">🎉</div>
+                <h3 class="text-3xl font-bold text-gray-800 mb-4" id="resultTitle">Level Completed!</h3>
+                <div class="bg-gradient-to-r from-yellow-100 to-orange-100 rounded-2xl p-6 mb-6">
+                    <div class="text-4xl font-bold text-orange-600 mb-2" id="finalScore">0 / 5</div>
+                    <div class="text-lg text-gray-700 mb-3" id="pointsEarned">+0 Points</div>
+                </div>
+                
+                <!-- AI Feedback -->
+                <div id="aiFeedback" class="bg-blue-50 rounded-xl p-4 mb-6">
+                    <div class="flex items-center justify-center mb-2">
+                        <span class="text-2xl mr-2">🤖</span>
+                        <span class="font-semibold text-blue-800">SmartBuddy AI Says:</span>
+                    </div>
+                    <p id="aiMessage" class="text-blue-700">Analyzing your performance...</p>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button onclick="startQuiz(currentSubject)" class="fun-button text-white py-3 px-6 rounded-xl font-semibold">
+                        🔄 Try Again
+                    </button>
+                    <button onclick="showWelcome()" class="secondary-button text-white py-3 px-6 rounded-xl font-semibold">
+                        🏠 Back to Home
+                    </button>
+                    <button onclick="showRewards()" class="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white py-3 px-6 rounded-xl font-semibold">
+                        🎁 Spend Points
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mini Games Section -->
+        <section id="miniGamesSection" class="hidden">
+            <div class="cartoon-card rounded-3xl p-8">
+                <h3 class="text-3xl font-bold text-gray-800 mb-6 text-center">🎮 Mini Games Arcade</h3>
+                <p class="text-center text-gray-600 mb-8">Play fun games and earn bonus points!</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- Memory Match Game -->
+                    <div class="cartoon-card rounded-2xl p-6 text-center hover:transform hover:scale-105 transition-all duration-200 cursor-pointer" onclick="startMemoryGame()">
+                        <div class="text-5xl mb-3">🧠</div>
+                        <h4 class="text-lg font-bold text-gray-800 mb-2">Memory Match</h4>
+                        <p class="text-sm text-gray-600 mb-3">Match pairs of cards</p>
+                        <div class="text-sm font-bold text-green-600">+3-5 Points</div>
+                    </div>
+
+                    <!-- Math Sprint Game -->
+                    <div class="cartoon-card rounded-2xl p-6 text-center hover:transform hover:scale-105 transition-all duration-200 cursor-pointer" onclick="startMathSprint()">
+                        <div class="text-5xl mb-3">⚡</div>
+                        <h4 class="text-lg font-bold text-gray-800 mb-2">Math Sprint</h4>
+                        <p class="text-sm text-gray-600 mb-3">Quick math problems</p>
+                        <div class="text-sm font-bold text-green-600">+2-4 Points</div>
+                    </div>
+
+                    <!-- Word Builder Game -->
+                    <div class="cartoon-card rounded-2xl p-6 text-center hover:transform hover:scale-105 transition-all duration-200 cursor-pointer" onclick="startWordBuilder()">
+                        <div class="text-5xl mb-3">🔤</div>
+                        <h4 class="text-lg font-bold text-gray-800 mb-2">Word Builder</h4>
+                        <p class="text-sm text-gray-600 mb-3">Build words from letters</p>
+                        <div class="text-sm font-bold text-green-600">+3-6 Points</div>
+                    </div>
+
+                    <!-- Pattern Puzzle Game -->
+                    <div class="cartoon-card rounded-2xl p-6 text-center hover:transform hover:scale-105 transition-all duration-200 cursor-pointer" onclick="startPatternPuzzle()">
+                        <div class="text-5xl mb-3">🧩</div>
+                        <h4 class="text-lg font-bold text-gray-800 mb-2">Pattern Puzzle</h4>
+                        <p class="text-sm text-gray-600 mb-3">Complete the pattern</p>
+                        <div class="text-sm font-bold text-green-600">+4-7 Points</div>
+                    </div>
+
+                    <!-- Color Match Game -->
+                    <div class="cartoon-card rounded-2xl p-6 text-center hover:transform hover:scale-105 transition-all duration-200 cursor-pointer" onclick="startColorMatch()">
+                        <div class="text-5xl mb-3">🎨</div>
+                        <h4 class="text-lg font-bold text-gray-800 mb-2">Color Match</h4>
+                        <p class="text-sm text-gray-600 mb-3">Match the colors</p>
+                        <div class="text-sm font-bold text-green-600">+2-5 Points</div>
+                    </div>
+
+                    <!-- Quick Reflex Game -->
+                    <div class="cartoon-card rounded-2xl p-6 text-center hover:transform hover:scale-105 transition-all duration-200 cursor-pointer" onclick="startQuickReflex()">
+                        <div class="text-5xl mb-3">⚡</div>
+                        <h4 class="text-lg font-bold text-gray-800 mb-2">Quick Reflex</h4>
+                        <p class="text-sm text-gray-600 mb-3">Test your speed</p>
+                        <div class="text-sm font-bold text-green-600">+1-3 Points</div>
+                    </div>
+
+                    <!-- Number Puzzle Game -->
+                    <div class="cartoon-card rounded-2xl p-6 text-center hover:transform hover:scale-105 transition-all duration-200 cursor-pointer" onclick="startNumberPuzzle()">
+                        <div class="text-5xl mb-3">🔢</div>
+                        <h4 class="text-lg font-bold text-gray-800 mb-2">Number Puzzle</h4>
+                        <p class="text-sm text-gray-600 mb-3">Solve number sequences</p>
+                        <div class="text-sm font-bold text-green-600">+4-8 Points</div>
+                    </div>
+
+                    <!-- Spelling Bee Game -->
+                    <div class="cartoon-card rounded-2xl p-6 text-center hover:transform hover:scale-105 transition-all duration-200 cursor-pointer" onclick="startSpellingBee()">
+                        <div class="text-5xl mb-3">🐝</div>
+                        <h4 class="text-lg font-bold text-gray-800 mb-2">Spelling Bee</h4>
+                        <p class="text-sm text-gray-600 mb-3">Spell words correctly</p>
+                        <div class="text-sm font-bold text-green-600">+3-7 Points</div>
+                    </div>
+
+                    <!-- Shape Sorter Game -->
+                    <div class="cartoon-card rounded-2xl p-6 text-center hover:transform hover:scale-105 transition-all duration-200 cursor-pointer" onclick="startShapeSorter()">
+                        <div class="text-5xl mb-3">🔺</div>
+                        <h4 class="text-lg font-bold text-gray-800 mb-2">Shape Sorter</h4>
+                        <p class="text-sm text-gray-600 mb-3">Sort shapes and colors</p>
+                        <div class="text-sm font-bold text-green-600">+2-6 Points</div>
+                    </div>
+
+                    <!-- Logic Builder Game -->
+                    <div class="cartoon-card rounded-2xl p-6 text-center hover:transform hover:scale-105 transition-all duration-200 cursor-pointer" onclick="startLogicBuilder()">
+                        <div class="text-5xl mb-3">🤔</div>
+                        <h4 class="text-lg font-bold text-gray-800 mb-2">Logic Builder</h4>
+                        <p class="text-sm text-gray-600 mb-3">Solve logic puzzles</p>
+                        <div class="text-sm font-bold text-green-600">+5-9 Points</div>
+                    </div>
+
+                    <!-- Adventure Quest Game -->
+                    <div class="cartoon-card rounded-2xl p-6 text-center hover:transform hover:scale-105 transition-all duration-200 cursor-pointer" onclick="startAdventureQuest()">
+                        <div class="text-5xl mb-3">🗺️</div>
+                        <h4 class="text-lg font-bold text-gray-800 mb-2">Adventure Quest</h4>
+                        <p class="text-sm text-gray-600 mb-3">Explore and learn</p>
+                        <div class="text-sm font-bold text-green-600">+6-12 Points</div>
+                    </div>
+
+                    <!-- Time Challenge Game -->
+                    <div class="cartoon-card rounded-2xl p-6 text-center hover:transform hover:scale-105 transition-all duration-200 cursor-pointer" onclick="startTimeChallenge()">
+                        <div class="text-5xl mb-3">⏰</div>
+                        <h4 class="text-lg font-bold text-gray-800 mb-2">Time Challenge</h4>
+                        <p class="text-sm text-gray-600 mb-3">Beat the clock</p>
+                        <div class="text-sm font-bold text-green-600">+4-10 Points</div>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <button onclick="showWelcome()" class="secondary-button text-white py-3 px-6 rounded-xl font-semibold">
+                        🏠 Back to Home
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Game Play Section -->
+        <section id="gamePlaySection" class="hidden">
+            <div class="cartoon-card rounded-3xl p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex items-center space-x-3">
+                        <span id="gameEmoji" class="text-3xl">🎮</span>
+                        <div>
+                            <h3 id="gameTitle" class="text-2xl font-bold text-gray-800">Mini Game</h3>
+                            <p id="gameInstructions" class="text-gray-600">Game instructions will appear here</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-sm text-gray-600">Score</div>
+                        <div class="text-xl font-bold text-purple-600" id="gameScore">0</div>
+                    </div>
+                </div>
+
+                <!-- Game Area -->
+                <div id="gameArea" class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6 mb-6 min-h-64">
+                    <!-- Game content will be inserted here -->
+                </div>
+
+                <!-- Game Controls -->
+                <div class="flex justify-between">
+                    <button onclick="showMiniGames()" class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg">
+                        ⬅️ Back to Games
+                    </button>
+                    <button id="gameActionButton" class="fun-button text-white py-2 px-6 rounded-lg">
+                        🎮 Start Game
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rewards Section -->
+        <section id="rewardsSection" class="hidden">
+            <div class="cartoon-card rounded-3xl p-8">
+                <h3 class="text-3xl font-bold text-gray-800 mb-6 text-center">🎁 Rewards Store</h3>
+                <div id="rewardsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Rewards will be loaded here -->
+                </div>
+                <div class="text-center mt-8">
+                    <button onclick="showWelcome()" class="secondary-button text-white py-3 px-6 rounded-xl font-semibold">
+                        🏠 Back to Home
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pending Rewards Section -->
+        <section id="pendingRewardsSection" class="hidden">
+            <div class="cartoon-card rounded-3xl p-8">
+                <h3 class="text-3xl font-bold text-gray-800 mb-6 text-center">📦 Pending Rewards</h3>
+                <p class="text-center text-gray-600 mb-8">Rewards waiting for parent confirmation and shipping</p>
+                
+                <div id="pendingRewardsContent">
+                    <!-- Pending rewards will be loaded here -->
+                </div>
+                
+                <div class="text-center mt-8">
+                    <button onclick="showProgress()" class="secondary-button text-white py-3 px-6 rounded-xl font-semibold">
+                        ⬅️ Back to Progress
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Digital Awards Section -->
+        <section id="digitalAwardsSection" class="hidden">
+            <div class="cartoon-card rounded-3xl p-8">
+                <h3 class="text-3xl font-bold text-gray-800 mb-6 text-center">🏆 My Digital Awards</h3>
+                <p class="text-center text-gray-600 mb-8">All your digital achievements and badges earned!</p>
+                
+                <div id="digitalAwardsContent">
+                    <!-- Digital awards will be loaded here -->
+                </div>
+                
+                <div class="text-center mt-8">
+                    <button onclick="showProgress()" class="secondary-button text-white py-3 px-6 rounded-xl font-semibold">
+                        ⬅️ Back to Progress
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Progress Section -->
+        <section id="progressSection" class="hidden">
+            <div class="cartoon-card rounded-3xl p-8">
+                <h3 class="text-3xl font-bold text-gray-800 mb-6 text-center">📊 My Learning Journey</h3>
+                
+                <!-- Progress Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- Level Card -->
+                    <div class="bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl p-6 text-center">
+                        <div class="text-5xl mb-3">🏆</div>
+                        <h4 class="text-2xl font-bold text-purple-600 mb-2" id="progressLevel">Level 1</h4>
+                        <p class="text-gray-600" id="progressStage">Brilliant Starter</p>
+                    </div>
+
+                    <!-- Points Card -->
+                    <div class="bg-gradient-to-br from-yellow-100 to-orange-100 rounded-2xl p-6 text-center">
+                        <div class="text-5xl mb-3">⭐</div>
+                        <h4 class="text-2xl font-bold text-orange-600 mb-2" id="progressPoints">0 Points</h4>
+                        <p class="text-gray-600">Total Earned</p>
+                    </div>
+
+                    <!-- Streak Card -->
+                    <div class="bg-gradient-to-br from-red-100 to-orange-100 rounded-2xl p-6 text-center">
+                        <div class="text-5xl mb-3">🔥</div>
+                        <h4 class="text-2xl font-bold text-red-600 mb-2" id="progressStreak">1 Day</h4>
+                        <p class="text-gray-600">Learning Streak</p>
+                    </div>
+                </div>
+
+                <!-- Fun Learning Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <!-- Quiz Stats -->
+                    <div class="bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl p-6">
+                        <h4 class="text-xl font-bold text-blue-600 mb-4 flex items-center">
+                            <span class="text-2xl mr-2">📚</span>
+                            Quiz Progress
+                        </h4>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Questions Answered:</span>
+                                <span class="font-bold text-blue-600" id="progressQuestionsAnswered">0</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Correct Answers:</span>
+                                <span class="font-bold text-green-600" id="progressCorrectAnswers">0</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Accuracy Rate:</span>
+                                <span class="font-bold text-purple-600" id="progressAccuracy">0%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Level Progress -->
+                    <div class="bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl p-6">
+                        <h4 class="text-xl font-bold text-green-600 mb-4 flex items-center">
+                            <span class="text-2xl mr-2">🎯</span>
+                            Next Level Progress
+                        </h4>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Current Level:</span>
+                                <span class="font-bold text-green-600" id="progressCurrentLevel">1</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-4 mb-2">
+                                <div id="levelProgressBar" class="bg-gradient-to-r from-green-400 to-emerald-500 h-4 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                            <div class="flex justify-between text-sm text-gray-600">
+                                <span id="pointsToNextLevel">Need 100 points for Level 2</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button onclick="showRewards()" class="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 hover:transform hover:scale-105">
+                        🎁 Get Rewards
+                    </button>
+                    <button onclick="showPendingRewards()" class="bg-gradient-to-r from-orange-400 to-red-500 hover:from-orange-500 hover:to-red-600 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 hover:transform hover:scale-105">
+                        📦 Pending Rewards
+                    </button>
+                    <button onclick="showDigitalAwards()" class="bg-gradient-to-r from-purple-400 to-indigo-500 hover:from-purple-500 hover:to-indigo-600 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 hover:transform hover:scale-105">
+                        🏆 My Awards
+                    </button>
+                    <button onclick="showWelcome()" class="secondary-button text-white py-3 px-6 rounded-xl font-semibold">
+                        🏠 Back to Home
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Settings Section -->
+        <section id="settingsSection" class="hidden">
+            <div class="cartoon-card rounded-3xl p-8">
+                <h3 class="text-3xl font-bold text-gray-800 mb-6 text-center">Settings</h3>
+                
+                <!-- Language Settings -->
+                <div class="bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl p-6 mb-6">
+                    <h4 class="text-xl font-bold text-blue-600 mb-4 flex items-center">
+                        <span class="text-2xl mr-2">🌍</span>
+                        Language / 语言设置
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <button onclick="setLanguage('english')" id="langEn" class="language-btn bg-white border-2 border-blue-200 hover:border-blue-400 p-4 rounded-xl text-center transition-all duration-200">
+                            <div class="font-semibold text-gray-800">English</div>
+                        </button>
+                        <button onclick="setLanguage('traditional')" id="langZhTW" class="language-btn bg-white border-2 border-blue-200 hover:border-blue-400 p-4 rounded-xl text-center transition-all duration-200">
+                            <div class="font-semibold text-gray-800">繁體中文</div>
+                        </button>
+                        <button onclick="setLanguage('simplified')" id="langZhCN" class="language-btn bg-white border-2 border-blue-200 hover:border-blue-400 p-4 rounded-xl text-center transition-all duration-200">
+                            <div class="font-semibold text-gray-800">简体中文</div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Audio Settings -->
+                <div class="bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl p-6 mb-6">
+                    <h4 class="text-xl font-bold text-purple-600 mb-4 flex items-center">
+                        <span class="text-2xl mr-2">🎵</span>
+                        Audio Settings
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Music Toggle -->
+                        <div class="flex items-center justify-between bg-white rounded-xl p-4">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-2xl">🎶</span>
+                                <div>
+                                    <div class="font-semibold text-gray-800">Background Music</div>
+                                </div>
+                            </div>
+                            <button onclick="toggleMusic()" id="musicToggle" class="toggle-btn bg-green-500 relative inline-flex h-8 w-14 items-center rounded-full transition-colors duration-200">
+                                <span class="toggle-dot bg-white h-6 w-6 rounded-full transition-transform duration-200 transform translate-x-7"></span>
+                            </button>
+                        </div>
+
+                        <!-- Vibration Toggle -->
+                        <div class="flex items-center justify-between bg-white rounded-xl p-4">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-2xl">📳</span>
+                                <div>
+                                    <div class="font-semibold text-gray-800">Vibration</div>
+                                </div>
+                            </div>
+                            <button onclick="toggleVibration()" id="vibrationToggle" class="toggle-btn bg-green-500 relative inline-flex h-8 w-14 items-center rounded-full transition-colors duration-200">
+                                <span class="toggle-dot bg-white h-6 w-6 rounded-full transition-transform duration-200 transform translate-x-7"></span>
+                            </button>
+                        </div>
+                        
+
+                    </div>
+                </div>
+
+                <!-- Premium Subscription -->
+                <div class="bg-gradient-to-br from-yellow-100 to-orange-100 rounded-2xl p-6 mb-6 border-2 border-yellow-300">
+                    <h4 class="text-xl font-bold text-orange-600 mb-4 flex items-center">
+                        <span class="text-2xl mr-2">👑</span>
+                        Premium Subscription
+                    </h4>
+                    <div class="bg-white rounded-xl p-6 mb-4">
+                        <div class="text-center mb-4">
+                            <div class="text-4xl mb-2">🌟</div>
+                            <h5 class="text-2xl font-bold text-gray-800 mb-2">SmartBuddy Premium</h5>
+                            <p class="text-gray-600">Unlock unlimited learning potential!</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-green-500">✅</span>
+                                <span class="text-gray-700">Unlimited Questions</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-green-500">✅</span>
+                                <span class="text-gray-700">Gift Redemption Available</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-green-500">✅</span>
+                                <span class="text-gray-700">All 10 Premium Mini-Games</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-green-500">✅</span>
+                                <span class="text-gray-700">Priority Support</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-green-500">✅</span>
+                                <span class="text-gray-700">Offline Mode</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-green-500">✅</span>
+                                <span class="text-gray-700">Unlimited Avatar Customizations</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Subscription Plans -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <!-- Monthly Plan -->
+                            <div class="border-2 border-gray-200 rounded-xl p-4 text-center">
+                                <h6 class="font-bold text-gray-800 mb-2">Monthly Plan</h6>
+                                <div class="text-2xl font-bold text-orange-600 mb-1">HK$78<span class="text-sm text-gray-600">/month</span></div>
+                                <div class="text-xs text-gray-500">Cancel anytime</div>
+                            </div>
+                            
+                            <!-- Annual Plan with Discount -->
+                            <div class="border-2 border-green-400 bg-green-50 rounded-xl p-4 text-center relative">
+                                <div class="absolute -top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">2 Months FREE!</div>
+                                <h6 class="font-bold text-gray-800 mb-2">Annual Plan</h6>
+                                <div class="text-2xl font-bold text-green-600 mb-1">HK$780<span class="text-sm text-gray-600">/year</span></div>
+                                <div class="text-xs text-green-700">Save HK$156 per year</div>
+                                <div class="text-xs text-gray-500">Only HK$65/month</div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center text-sm text-gray-600 mb-4">
+                            ⭐ 7-day free trial • Cancel anytime
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <button onclick="subscribePremium('monthly')" class="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white py-3 px-4 rounded-xl font-bold transition-all duration-300 hover:transform hover:scale-105">
+                            🚀 Start Monthly Trial
+                        </button>
+                        <button onclick="subscribePremium('annual')" class="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white py-3 px-4 rounded-xl font-bold transition-all duration-300 hover:transform hover:scale-105">
+                            💰 Start Annual Trial
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Support & Contact -->
+                <div class="bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl p-6 mb-6">
+                    <h4 class="text-xl font-bold text-green-600 mb-4 flex items-center">
+                        <span class="text-2xl mr-2">📞</span>
+                        Contact Us
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <button onclick="openHelp()" class="bg-white hover:bg-gray-50 border-2 border-green-200 hover:border-green-400 p-4 rounded-xl text-center transition-all duration-200">
+                            <div class="text-2xl mb-2">❓</div>
+                            <div class="font-semibold text-gray-800">Help Center</div>
+                        </button>
+                        
+                        <button onclick="sendFeedback()" class="bg-white hover:bg-gray-50 border-2 border-green-200 hover:border-green-400 p-4 rounded-xl text-center transition-all duration-200">
+                            <div class="text-2xl mb-2">💬</div>
+                            <div class="font-semibold text-gray-800">Send Feedback</div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Back to Home Button -->
+                <div class="text-center">
+                    <button onclick="showWelcome()" class="secondary-button text-white py-3 px-6 rounded-xl font-semibold">
+                        🏠 Back to Home
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Daily Streak Popup -->
+    <div id="streakPopup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999;">
+        <div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; padding: 1rem;">
+            <div class="bg-gradient-to-br from-orange-100 to-pink-100 rounded-3xl p-8 text-center max-w-lg relative overflow-hidden" style="max-height: 90vh; overflow-y: auto;">
+                <!-- Close Button -->
+                <button id="closeButton1" style="position: absolute; top: 1rem; right: 1rem; width: 2rem; height: 2rem; background: rgba(255,255,255,0.9); border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: bold; cursor: pointer; z-index: 10;">
+                    ×
+                </button>
+                
+                <!-- Decorative elements -->
+                <div class="absolute top-2 left-4 text-yellow-400 text-2xl animate-bounce">⭐</div>
+                <div class="absolute top-4 right-12 text-pink-400 text-xl animate-pulse">✨</div>
+                <div class="absolute bottom-4 left-6 text-blue-400 text-xl animate-bounce">💫</div>
+                
+                <!-- Streak Fire Icon -->
+                <div class="text-8xl mb-4 animate-pulse" id="streakMainEmoji">🔥</div>
+                
+                <!-- Streak Title -->
+                <h3 class="text-3xl font-bold text-gray-800 mb-3" id="streakTitle">Daily Learning Streak!</h3>
+                
+                <!-- Current Streak Display -->
+                <div class="bg-white rounded-2xl p-4 mb-6 shadow-lg">
+                    <div class="text-4xl font-bold text-orange-600 mb-2" id="currentStreak">0 Days</div>
+                    <div class="text-lg text-gray-700" id="streakMessage">Start your learning journey today!</div>
+                </div>
+                
+                <!-- Fun Streak Calendar -->
+                <div class="mb-6">
+                    <p class="text-sm font-semibold text-gray-600 mb-3">This Week:</p>
+                    <div class="grid grid-cols-7 gap-2" id="streakCalendar">
+                        <!-- Calendar days will be inserted here -->
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                    <button id="streakLearnButton" class="fun-button text-white py-3 px-6 rounded-xl font-semibold" style="border: none; cursor: pointer;">
+                        🚀 Start Learning
+                    </button>
+                    <button id="streakPrizesButton" class="secondary-button text-white py-2 px-4 rounded-xl font-semibold" style="border: none; cursor: pointer;">
+                        🎁 View Prizes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Achievement Popup -->
+    <div id="achievementPopup" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-40" style="display: none;">
+        <div class="bg-white rounded-3xl p-8 text-center max-w-md mx-4">
+            <div class="text-6xl mb-4" id="achievementEmoji">🏆</div>
+            <h4 class="text-2xl font-bold text-gray-800 mb-2" id="achievementTitle">Achievement Unlocked!</h4>
+            <p class="text-gray-600 mb-6" id="achievementText">You've earned a new badge!</p>
+            <button onclick="closeAchievement()" class="fun-button text-white py-2 px-6 rounded-xl font-semibold">
+                Awesome! 🎉
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ===== CORE APP DATA =====
+        
+        // Real Airtable configuration
+        const AIRTABLE_CONFIG = {
+            baseId: 'appzbq4Zom94iCItg',
+            apiKey: 'pat5tRFkAevnxWSCb.df7ccb343bab79699520ba7704fbd86b2a8d99a9678715a432b8f7fbf7587c70'
+        };
+
+        const STRIPE_PRICES = {
+            premiumMonthly: 'price_1RWwAMJA1KZZIeB2GEK05Jnf',
+            premiumAnnual: 'price_1RWwBNJA1KZZIeB2RT3v0FN9'
+        };
+
+        // EmailJS Configuration - Real credentials provided
+        const EMAILJS_CONFIG = {
+            PUBLIC_KEY: '-PLJ2MVrFhZZUUbzw',     // Real EmailJS public key
+            SERVICE_ID: 'service_xn8wsns',      // Real EmailJS service ID  
+            TEMPLATE_ID: 'template_7trx7si'     // Real EmailJS template ID for reward emails
+        };
+
+        // Enhanced user stats
+        let userStats = {
+            userId: generateUserId(),
+            points: 0,
+            level: 1,
+            streak: 1,
+            totalQuestionsAnswered: 0,
+            correctAnswers: 0,
+            lastLoginDate: new Date().toDateString(),
+            selectedGrade: '',
+            isPremium: false,
+            premiumExpiresAt: null,
+            subjectStats: {
+                Math: { attempted: 0, correct: 0, averageTime: 0 },
+                English: { attempted: 0, correct: 0, averageTime: 0 },
+                Science: { attempted: 0, correct: 0, averageTime: 0 }
+            },
+            redeemedRewards: [],
+            reservedRewards: [],
+            unlockedAchievements: [],
+            preferences: {
+                language: 'english',
+                soundEnabled: true,
+                notificationsEnabled: true,
+                difficultyPreference: 'about_right'
+            }
+        };
+
+        // Daily usage tracking
+        let dailyUsage = {
+            questionsAnswered: 0,
+            gamesPlayed: 0,
+            quizzesCompleted: 0,
+            lastResetDate: new Date().toDateString()
+        };
+
+        // Global settings
+        let appSettings = {
+            language: 'english',
+            musicEnabled: true,
+            vibrationEnabled: true,
+            darkModeEnabled: false
+        };
+
+        // Quiz state
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let currentSubject = '';
+        let currentGrade = '';
+        let questionStartTime = Date.now();
+        let quizSessionId = generateSessionId();
+
+        // Game state
+        let currentGame = '';
+        let gameState = {};
+        let gameTimer = null;
+
+        // ===== UTILITY FUNCTIONS =====
+        
+        function generateUserId() {
+            return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+        
+        function generateSessionId() {
+            return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+        }
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function showQuickFeedback(message, type) {
+            const feedback = document.createElement('div');
+            feedback.className = `fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-${type === 'green' ? 'green' : type === 'blue' ? 'blue' : 'red'}-500 text-white px-6 py-3 rounded-lg font-bold text-lg z-50`;
+            feedback.textContent = message;
+            
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                if (document.body.contains(feedback)) {
+                    document.body.removeChild(feedback);
+                }
+            }, 2000);
+        }
+
+        // ===== NAVIGATION FUNCTIONS =====
+        
+        function showSection(sectionId) {
+            const sections = ['signUpSection', 'loginSection', 'welcomeSection', 'quizSection', 'resultsSection', 'rewardsSection', 'miniGamesSection', 'gamePlaySection', 'progressSection', 'settingsSection', 'pendingRewardsSection', 'digitalAwardsSection'];
+            sections.forEach(section => {
+                const el = document.getElementById(section);
+                if (el) {
+                    if (section === sectionId) {
+                        el.classList.remove('hidden');
+                    } else {
+                        el.classList.add('hidden');
+                    }
+                }
+            });
+        }
+        
+        // ===== AUTHENTICATION FUNCTIONS =====
+        
+        function showSignUp() {
+            showSection('signUpSection');
+        }
+        
+        function showLogin() {
+            showSection('loginSection');
+        }
+        
+        function createAccount() {
+            const childName = document.getElementById('childName').value.trim();
+            const parentEmail = document.getElementById('parentSignUpEmail').value.trim();
+            const grade = document.getElementById('signUpGradeSelect').value;
+            
+            if (!childName) {
+                showQuickFeedback('❌ Please enter your name!', 'red');
+                return;
+            }
+            
+            if (!parentEmail || !parentEmail.includes('@')) {
+                showQuickFeedback('❌ Please enter a valid parent email!', 'red');
+                return;
+            }
+            
+            if (!grade) {
+                showQuickFeedback('❌ Please select your grade level!', 'red');
+                return;
+            }
+            
+            // Save user data
+            userStats.childName = childName;
+            userStats.parentEmail = parentEmail;
+            userStats.selectedGrade = grade;
+            userStats.isLoggedIn = true;
+            
+            showQuickFeedback('🎉 Welcome to SmartBuddy! Let\'s start learning!', 'green');
+            
+            setTimeout(() => {
+                showWelcome();
+            }, 1000);
+        }
+        
+        function signIn() {
+            const childName = document.getElementById('loginChildName').value.trim();
+            const parentEmail = document.getElementById('loginParentEmail').value.trim();
+            
+            if (!childName) {
+                showQuickFeedback('❌ Please enter your name!', 'red');
+                return;
+            }
+            
+            if (!parentEmail || !parentEmail.includes('@')) {
+                showQuickFeedback('❌ Please enter a valid parent email!', 'red');
+                return;
+            }
+            
+            // Save user data for future auto-login
+            userStats.childName = childName;
+            userStats.parentEmail = parentEmail;
+            userStats.isLoggedIn = true;
+            userStats.hasLoggedInBefore = true;
+            
+            // Store login info for auto-login next time
+            localStorage.setItem('smartbuddy_user', JSON.stringify({
+                childName: childName,
+                parentEmail: parentEmail,
+                hasLoggedInBefore: true
+            }));
+            
+            showQuickFeedback('👋 Welcome back! Ready to continue learning?', 'green');
+            
+            setTimeout(() => {
+                showWelcome();
+            }, 1000);
+        }
+        
+        function continueAsGuest() {
+            userStats.isGuest = true;
+            userStats.isLoggedIn = true;
+            userStats.childName = "Guest";
+            userStats.selectedGrade = "Primary2";
+            
+            showQuickFeedback('👤 Welcome, Guest! Exploring SmartBuddy...', 'blue');
+            
+            setTimeout(() => {
+                showWelcome();
+            }, 1000);
+        }
+
+        function showWelcome() {
+            showSection('welcomeSection');
+        }
+
+        function showSettings() {
+            showSection('settingsSection');
+            updateSettingsDisplay();
+        }
+
+        function showProgress() {
+            showSection('progressSection');
+            updateProgressDisplay();
+        }
+
+        function showRewards() {
+            showSection('rewardsSection');
+            loadRewards();
+        }
+
+        function showMiniGames() {
+            showSection('miniGamesSection');
+        }
+
+        // ===== PENDING REWARDS & DIGITAL AWARDS FUNCTIONS =====
+        
+        function showPendingRewards() {
+            showSection('pendingRewardsSection');
+            loadPendingRewards();
+        }
+        
+        function showDigitalAwards() {
+            showSection('digitalAwardsSection');
+            loadDigitalAwards();
+        }
+        
+        function loadPendingRewards() {
+            const container = document.getElementById('pendingRewardsContent');
+            const pendingRewards = userStats.reservedRewards || [];
+            
+            if (pendingRewards.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="text-6xl mb-4">📭</div>
+                        <h4 class="text-2xl font-bold text-gray-600 mb-4">No Pending Rewards</h4>
+                        <p class="text-gray-500 mb-6">When you redeem physical rewards, they'll appear here while waiting for parent confirmation.</p>
+                        <button onclick="showRewards()" class="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white py-3 px-6 rounded-xl font-semibold">
+                            🎁 Browse Rewards Store
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = `
+                <div class="space-y-6">
+                    ${pendingRewards.map(reward => `
+                        <div class="bg-gradient-to-r from-orange-50 to-pink-50 rounded-2xl p-6 border-2 border-orange-200">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="flex-1">
+                                    <h4 class="text-xl font-bold text-gray-800 mb-2 flex items-center">
+                                        <span class="text-2xl mr-3">📦</span>
+                                        ${reward.name}
+                                    </h4>
+                                    <div class="text-lg font-semibold text-orange-600 mb-2">${reward.points} points reserved</div>
+                                    <div class="text-sm text-gray-600 space-y-1">
+                                        <div><strong>Status:</strong> ${reward.status.replace('_', ' ').toUpperCase()}</div>
+                                        <div><strong>Parent Email:</strong> ${reward.parentEmail}</div>
+                                        <div><strong>Requested:</strong> ${new Date(reward.dateRequested).toLocaleDateString()}</div>
+                                        <div><strong>Expires:</strong> ${new Date(reward.expiresAt).toLocaleDateString()}</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="inline-block px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-semibold">
+                                        ⏳ Waiting
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="bg-yellow-50 rounded-xl p-4 border border-yellow-200">
+                                <h5 class="font-bold text-yellow-800 mb-2">📋 What happens next:</h5>
+                                <ol class="text-sm text-yellow-700 space-y-1">
+                                    <li>1. Your parent receives an email</li>
+                                    <li>2. They confirm shipping address</li>
+                                    <li>3. We ship your reward within 3-5 days!</li>
+                                </ol>
+                                <p class="text-xs text-yellow-600 mt-3">
+                                    💡 If not confirmed within 7 days, points will be returned to your account.
+                                </p>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        function loadDigitalAwards() {
+            const container = document.getElementById('digitalAwardsContent');
+            
+            const achievements = [
+                {
+                    id: 'first_quiz',
+                    name: 'First Quiz Master',
+                    description: 'Completed your very first quiz!',
+                    emoji: '🌟',
+                    earned: userStats.totalQuestionsAnswered > 0,
+                    category: 'Learning'
+                },
+                {
+                    id: 'point_collector',
+                    name: 'Point Collector',
+                    description: 'Earned your first 50 points',
+                    emoji: '💎',
+                    earned: userStats.points >= 50,
+                    category: 'Points'
+                },
+                {
+                    id: 'accuracy_expert',
+                    name: 'Accuracy Expert',
+                    description: 'Achieved 80% accuracy or higher',
+                    emoji: '🎯',
+                    earned: userStats.totalQuestionsAnswered > 0 && (userStats.correctAnswers / userStats.totalQuestionsAnswered) >= 0.8,
+                    category: 'Skills'
+                },
+                {
+                    id: 'level_up',
+                    name: 'Level Up Champion',
+                    description: 'Reached Level 2 or higher',
+                    emoji: '🏆',
+                    earned: userStats.level >= 2,
+                    category: 'Progress'
+                },
+                {
+                    id: 'streak_starter',
+                    name: 'Streak Starter',
+                    description: 'Maintained a 3-day learning streak',
+                    emoji: '🔥',
+                    earned: userStats.streak >= 3,
+                    category: 'Consistency'
+                },
+                {
+                    id: 'game_player',
+                    name: 'Game Master',
+                    description: 'Played your first mini-game',
+                    emoji: '🎮',
+                    earned: dailyUsage.gamesPlayed > 0,
+                    category: 'Games'
+                }
+            ];
+            
+            const earnedCount = achievements.filter(a => a.earned).length;
+            const totalCount = achievements.length;
+            
+            const categories = [...new Set(achievements.map(a => a.category))];
+            
+            container.innerHTML = `
+                <div class="mb-8">
+                    <div class="bg-gradient-to-r from-purple-100 to-indigo-100 rounded-2xl p-6 text-center">
+                        <h4 class="text-2xl font-bold text-purple-600 mb-2">Achievement Progress</h4>
+                        <div class="text-4xl font-bold text-indigo-600 mb-2">${earnedCount} / ${totalCount}</div>
+                        <div class="text-purple-700">Badges Earned</div>
+                        <div class="w-full bg-purple-200 rounded-full h-4 mt-4">
+                            <div class="bg-gradient-to-r from-purple-400 to-indigo-500 h-4 rounded-full transition-all duration-500" style="width: ${(earnedCount / totalCount) * 100}%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                ${categories.map(category => {
+                    const categoryAchievements = achievements.filter(a => a.category === category);
+                    const categoryEmojis = {
+                        'Learning': '🎓',
+                        'Points': '💎',
+                        'Skills': '⚡',
+                        'Progress': '📈',
+                        'Consistency': '🔥',
+                        'Games': '🎮'
+                    };
+                    
+                    return `
+                        <div class="mb-8">
+                            <h5 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                                <span class="text-2xl mr-3">${categoryEmojis[category]}</span>
+                                ${category} Badges
+                            </h5>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                ${categoryAchievements.map(achievement => `
+                                    <div class="bg-white rounded-2xl p-6 border-2 ${achievement.earned ? 'border-green-200 bg-green-50' : 'border-gray-200 opacity-60'}">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="text-4xl ${achievement.earned ? '' : 'grayscale'}">${achievement.emoji}</div>
+                                            <div class="flex-1">
+                                                <h6 class="text-lg font-bold text-gray-800 mb-1">${achievement.name}</h6>
+                                                <p class="text-sm text-gray-600 mb-2">${achievement.description}</p>
+                                                <div class="flex items-center space-x-2">
+                                                    ${achievement.earned ? `
+                                                        <span class="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold">
+                                                            ✅ EARNED
+                                                        </span>
+                                                    ` : `
+                                                        <span class="inline-block px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-semibold">
+                                                            🔒 LOCKED
+                                                        </span>
+                                                    `}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            `;
+        }
+
+        // ===== QUIZ FUNCTIONS =====
+        
+        function saveSelectedGrade() {
+            const gradeSelect = document.getElementById('gradeSelect');
+            if (gradeSelect && gradeSelect.value) {
+                userStats.selectedGrade = gradeSelect.value;
+                console.log(`💾 Grade saved: ${userStats.selectedGrade}`);
+            }
+        }
+
+        async function startQuiz(subject) {
+            const gradeSelect = document.getElementById('gradeSelect');
+            currentGrade = gradeSelect ? gradeSelect.value : '';
+            
+            if (!currentGrade) {
+                showQuickFeedback('Please select your grade first!', 'red');
+                return;
+            }
+
+            currentSubject = subject;
+            showSection('quizSection');
+            
+            const subjectEmojis = {
+                'Math': '🔢',
+                'English': '📚', 
+                'Science': '🧪'
+            };
+            
+            document.getElementById('subjectEmoji').textContent = subjectEmojis[subject];
+            document.getElementById('quizTitle').textContent = `${subject} Quiz`;
+            document.getElementById('quizGrade').textContent = currentGrade;
+            
+            await loadQuestions(subject, currentGrade);
+        }
+
+        async function loadQuestions(subject, grade) {
+            try {
+                console.log(`📚 Loading questions for ${subject} ${grade} from Airtable...`);
+                
+                // Show loading indicator
+                document.getElementById('questionText').textContent = `Loading ${subject} questions for ${grade}...`;
+                
+                // Build Airtable API URL with filters
+                const baseUrl = `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/Questions`;
+                
+                // Create filter for subject and grade
+                const filterFormula = `AND({Subject} = '${subject}', {Grade} = '${grade}')`;
+                const encodedFilter = encodeURIComponent(filterFormula);
+                
+                const url = `${baseUrl}?filterByFormula=${encodedFilter}&maxRecords=10`;
+                
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${AIRTABLE_CONFIG.apiKey}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Airtable API error: ${response.status} ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('📊 Airtable response:', data);
+                
+                if (data.records && data.records.length > 0) {
+                    // Convert Airtable records to our question format
+                    const airtableQuestions = data.records.map(record => ({
+                        'Question Text': record.fields['Question Text'] || record.fields['Question'] || '',
+                        'Option A': record.fields['Option A'] || record.fields['OptionA'] || '',
+                        'Option B': record.fields['Option B'] || record.fields['OptionB'] || '',
+                        'Option C': record.fields['Option C'] || record.fields['OptionC'] || '',
+                        'Option D': record.fields['Option D'] || record.fields['OptionD'] || '',
+                        'Correct Answer': record.fields['Correct Answer'] || record.fields['CorrectAnswer'] || 'A',
+                        'Points Value': record.fields['Points Value'] || record.fields['Points'] || 10
+                    })).filter(q => q['Question Text']); // Filter out questions without text
+                    
+                    if (airtableQuestions.length > 0) {
+                        console.log(`✅ Loaded ${airtableQuestions.length} questions from Airtable`);
+                        currentQuestions = shuffleArray(airtableQuestions).slice(0, 5); // Take up to 5 questions
+                        currentQuestionIndex = 0;
+                        userAnswers = [];
+                        displayQuestion();
+                        return;
+                    }
+                }
+                
+                console.warn('⚠️ No questions found in Airtable, falling back to demo questions');
+                loadDemoQuestions(subject, grade);
+                
+            } catch (error) {
+                console.error('❌ Error loading questions from Airtable:', error);
+                showQuickFeedback('Using demo questions (Airtable connection failed)', 'blue');
+                loadDemoQuestions(subject, grade);
+            }
+        }
+
+        function loadDemoQuestions(subject, grade) {
+            const demoQuestions = {
+                'Math': {
+                    'K1': [
+                        { 'Question Text': 'Count the apples: 🍎🍎🍎', 'Option A': '3', 'Option B': '2', 'Option C': '4', 'Correct Answer': 'A', 'Points Value': 10 },
+                        { 'Question Text': 'What is 1 + 1?', 'Option A': '2', 'Option B': '1', 'Option C': '3', 'Correct Answer': 'A', 'Points Value': 10 },
+                        { 'Question Text': 'Which is bigger? 🐘 or 🐭', 'Option A': 'Mouse', 'Option B': 'Same', 'Option C': 'Elephant', 'Correct Answer': 'C', 'Points Value': 10 }
+                    ],
+                    'Primary2': [
+                        { 'Question Text': '5 + 3 = ?', 'Option A': '8', 'Option B': '7', 'Option C': '9', 'Correct Answer': 'A', 'Points Value': 10 },
+                        { 'Question Text': '10 - 4 = ?', 'Option A': '5', 'Option B': '7', 'Option C': '6', 'Correct Answer': 'C', 'Points Value': 10 },
+                        { 'Question Text': 'What is 2 × 3?', 'Option A': '5', 'Option B': '6', 'Option C': '7', 'Correct Answer': 'B', 'Points Value': 10 }
+                    ]
+                },
+                'English': {
+                    'K1': [
+                        { 'Question Text': 'What sound does a cat make?', 'Option A': 'Woof', 'Option B': 'Meow', 'Option C': 'Moo', 'Correct Answer': 'B', 'Points Value': 10 },
+                        { 'Question Text': 'Which letter comes after A?', 'Option A': 'B', 'Option B': 'C', 'Option C': 'D', 'Correct Answer': 'A', 'Points Value': 10 }
+                    ],
+                    'Primary2': [
+                        { 'Question Text': 'Which word rhymes with "cat"?', 'Option A': 'Dog', 'Option B': 'Hat', 'Option C': 'Fish', 'Correct Answer': 'B', 'Points Value': 10 },
+                        { 'Question Text': 'What is the opposite of "big"?', 'Option A': 'Large', 'Option B': 'Small', 'Option C': 'Huge', 'Correct Answer': 'B', 'Points Value': 10 }
+                    ]
+                },
+                'Science': {
+                    'K1': [
+                        { 'Question Text': 'What do plants need to grow?', 'Option A': 'Candy', 'Option B': 'Water', 'Option C': 'Toys', 'Correct Answer': 'B', 'Points Value': 10 },
+                        { 'Question Text': 'How many legs does a spider have?', 'Option A': '6', 'Option B': '8', 'Option C': '10', 'Correct Answer': 'B', 'Points Value': 10 }
+                    ],
+                    'Primary2': [
+                        { 'Question Text': 'What do we breathe?', 'Option A': 'Water', 'Option B': 'Air', 'Option C': 'Food', 'Correct Answer': 'B', 'Points Value': 10 },
+                        { 'Question Text': 'How many seasons are there?', 'Option A': '3', 'Option B': '4', 'Option C': '5', 'Correct Answer': 'B', 'Points Value': 10 }
+                    ]
+                }
+            };
+
+            let selectedQuestions = demoQuestions[subject]?.[grade] || demoQuestions['Math']['K1'];
+            currentQuestions = shuffleArray(selectedQuestions).slice(0, 3);
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            if (currentQuestionIndex >= currentQuestions.length) {
+                showResults();
+                return;
+            }
+
+            const question = currentQuestions[currentQuestionIndex];
+            const totalQuestions = currentQuestions.length;
+            
+            document.getElementById('questionProgress').textContent = `${currentQuestionIndex + 1} / ${totalQuestions}`;
+            document.getElementById('progressBar').style.width = `${((currentQuestionIndex + 1) / totalQuestions) * 100}%`;
+            document.getElementById('questionText').innerHTML = question['Question Text'];
+            
+            const options = ['A', 'B', 'C'].filter(opt => question[`Option ${opt}`]);
+            const answerOptionsHtml = options.map(option => `
+                <button onclick="selectAnswer('${option}')" 
+                        class="answer-option w-full text-left p-4 rounded-xl border-2 border-gray-200 hover:border-purple-400 hover:bg-purple-50 transition-all duration-200 text-base"
+                        data-option="${option}">
+                    <span class="font-semibold text-purple-600">${option})</span> ${question[`Option ${option}`]}
+                </button>
+            `).join('');
+            
+            document.getElementById('answerOptions').innerHTML = answerOptionsHtml;
+            
+            const nextButton = document.getElementById('nextButton');
+            nextButton.disabled = true;
+            nextButton.classList.add('opacity-50', 'cursor-not-allowed');
+            nextButton.innerHTML = currentQuestionIndex < totalQuestions - 1 ? 'Next Question ➡️' : 'Finish Quiz 🎉';
+        }
+
+        function selectAnswer(selectedOption) {
+            if (document.querySelector('.answer-option[disabled]')) return;
+            
+            const question = currentQuestions[currentQuestionIndex];
+            const correctAnswer = question['Correct Answer'].trim().toUpperCase();
+            const isCorrect = selectedOption.toUpperCase() === correctAnswer;
+            
+            userAnswers.push({
+                questionIndex: currentQuestionIndex,
+                selectedAnswer: selectedOption,
+                correctAnswer: correctAnswer,
+                isCorrect: isCorrect,
+                points: isCorrect ? (question['Points Value'] || 10) : 0
+            });
+            
+            userStats.totalQuestionsAnswered++;
+            if (isCorrect) {
+                userStats.correctAnswers++;
+            }
+            
+            showAnswerFeedback(isCorrect, correctAnswer);
+        }
+
+        function showAnswerFeedback(isCorrect, correctAnswer) {
+            const options = document.querySelectorAll('.answer-option');
+            
+            options.forEach(option => {
+                const optionLetter = option.textContent.trim().split(')')[0];
+                
+                if (optionLetter === correctAnswer) {
+                    option.classList.add('bg-green-100', 'border-green-400');
+                    if (!option.innerHTML.includes('✅')) {
+                        option.innerHTML += ' ✅';
+                    }
+                } else if (option.classList.contains('bg-purple-50') && !isCorrect) {
+                    option.classList.add('bg-red-100', 'border-red-400');
+                    if (!option.innerHTML.includes('❌')) {
+                        option.innerHTML += ' ❌';
+                    }
+                }
+                
+                option.disabled = true;
+                option.style.pointerEvents = 'none';
+            });
+            
+            if (isCorrect) {
+                showQuickFeedback('🎉 Correct! Well done!', 'green');
+            } else {
+                showQuickFeedback(`❌ Wrong! The correct answer is ${correctAnswer}`, 'red');
+            }
+            
+            const nextButton = document.getElementById('nextButton');
+            nextButton.disabled = false;
+            nextButton.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            displayQuestion();
+        }
+
+        function showResults() {
+            showSection('resultsSection');
+            
+            const totalQuestions = currentQuestions.length;
+            const correctCount = userAnswers.filter(answer => answer.isCorrect).length;
+            const totalPoints = userAnswers.reduce((sum, answer) => sum + answer.points, 0);
+            
+            userStats.points += totalPoints;
+            
+            const newLevel = Math.floor(userStats.points / 100) + 1;
+            if (newLevel > userStats.level) {
+                userStats.level = newLevel;
+                showAchievement('🎉', 'Level Up!', `You've reached Level ${newLevel}!`);
+            }
+            
+            updateUserStats();
+            
+            document.getElementById('finalScore').textContent = `${correctCount} / ${totalQuestions}`;
+            document.getElementById('pointsEarned').textContent = `+${totalPoints} Points`;
+            
+            const percentage = (correctCount / totalQuestions) * 100;
+            let resultEmoji, resultMessage;
+            
+            if (percentage >= 80) {
+                resultEmoji = '🏆';
+                resultMessage = 'Outstanding! You\'re a true smartbuddy!';
+            } else if (percentage >= 60) {
+                resultEmoji = '🌟';
+                resultMessage = 'Great job! Keep it up!';
+            } else {
+                resultEmoji = '💪';
+                resultMessage = 'Nice try! Practice makes perfect!';
+            }
+            
+            document.getElementById('resultEmoji').textContent = resultEmoji;
+            document.getElementById('resultTitle').textContent = resultMessage;
+            document.getElementById('aiMessage').textContent = `🌟 Amazing work! You're getting really smart!`;
+        }
+
+        // ===== MINI GAMES =====
+        
+        function startMemoryGame() {
+            currentGame = 'memory';
+            showSection('gamePlaySection');
+            
+            document.getElementById('gameEmoji').textContent = '🧠';
+            document.getElementById('gameTitle').textContent = 'Memory Match';
+            document.getElementById('gameInstructions').textContent = 'Click two cards to find matching pairs!';
+            document.getElementById('gameScore').textContent = '0';
+            
+            gameState = {
+                cards: [],
+                flippedCards: [],
+                matches: 0,
+                totalPairs: 3,
+                score: 0
+            };
+            
+            setupMemoryGame();
+        }
+
+        function setupMemoryGame() {
+            const symbols = ['🐶', '🐱', '🐸'];
+            const cardPairs = [...symbols, ...symbols];
+            gameState.cards = shuffleArray(cardPairs);
+            
+            const gameArea = document.getElementById('gameArea');
+            gameArea.innerHTML = `
+                <div class="grid grid-cols-3 gap-3 max-w-sm mx-auto">
+                    ${gameState.cards.map((symbol, index) => `
+                        <div class="memory-card w-16 h-16 bg-blue-200 rounded-lg flex items-center justify-center text-2xl cursor-pointer hover:bg-blue-300 transition-all duration-200" 
+                             onclick="flipCard(${index})" 
+                             data-index="${index}"
+                             data-symbol="${symbol}">
+                            ❓
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="text-center mt-4">
+                    <p class="text-gray-600">Pairs found: <span id="pairsFound">0</span> / ${gameState.totalPairs}</p>
+                </div>
+            `;
+            
+            document.getElementById('gameActionButton').textContent = '🔄 Reset Game';
+            document.getElementById('gameActionButton').onclick = () => setupMemoryGame();
+        }
+
+        function flipCard(index) {
+            if (gameState.flippedCards.length >= 2) return;
+            if (gameState.flippedCards.includes(index)) return;
+            
+            const card = document.querySelector(`[data-index="${index}"]`);
+            const symbol = card.dataset.symbol;
+            
+            card.textContent = symbol;
+            card.classList.add('bg-yellow-200');
+            gameState.flippedCards.push(index);
+            
+            if (gameState.flippedCards.length === 2) {
+                setTimeout(checkMatch, 1000);
+            }
+        }
+
+        function checkMatch() {
+            const [first, second] = gameState.flippedCards;
+            const card1 = document.querySelector(`[data-index="${first}"]`);
+            const card2 = document.querySelector(`[data-index="${second}"]`);
+            
+            if (card1.dataset.symbol === card2.dataset.symbol) {
+                card1.classList.add('bg-green-200');
+                card2.classList.add('bg-green-200');
+                gameState.matches++;
+                gameState.score += 5;
+                
+                document.getElementById('pairsFound').textContent = gameState.matches;
+                document.getElementById('gameScore').textContent = gameState.score;
+                
+                if (gameState.matches === gameState.totalPairs) {
+                    setTimeout(() => {
+                        endGame('memory', gameState.score, '🧠 Perfect Memory!');
+                    }, 500);
+                }
+            } else {
+                card1.textContent = '❓';
+                card2.textContent = '❓';
+                card1.classList.remove('bg-yellow-200');
+                card2.classList.remove('bg-yellow-200');
+            }
+            
+            gameState.flippedCards = [];
+        }
+
+        function startMathSprint() {
+            showQuickFeedback('Math Sprint game coming soon! 🚀', 'blue');
+            showMiniGames();
+        }
+
+        function startWordBuilder() {
+            showQuickFeedback('Word Builder game coming soon! 🔤', 'blue');
+            showMiniGames();
+        }
+
+        function startPatternPuzzle() {
+            showQuickFeedback('Pattern Puzzle game coming soon! 🧩', 'blue');
+            showMiniGames();
+        }
+
+        function startColorMatch() {
+            showQuickFeedback('Color Match game coming soon! 🎨', 'blue');
+            showMiniGames();
+        }
+
+        function startQuickReflex() {
+            showQuickFeedback('Quick Reflex game coming soon! ⚡', 'blue');
+            showMiniGames();
+        }
+
+        function startNumberPuzzle() {
+            showQuickFeedback('Number Puzzle game coming soon! 🔢', 'blue');
+            showMiniGames();
+        }
+
+        function startSpellingBee() {
+            showQuickFeedback('Spelling Bee game coming soon! 🐝', 'blue');
+            showMiniGames();
+        }
+
+        function startShapeSorter() {
+            showQuickFeedback('Shape Sorter game coming soon! 🔺', 'blue');
+            showMiniGames();
+        }
+
+        function startLogicBuilder() {
+            showQuickFeedback('Logic Builder game coming soon! 🤔', 'blue');
+            showMiniGames();
+        }
+
+        function startAdventureQuest() {
+            showQuickFeedback('Adventure Quest game coming soon! 🗺️', 'blue');
+            showMiniGames();
+        }
+
+        function startTimeChallenge() {
+            showQuickFeedback('Time Challenge game coming soon! ⏰', 'blue');
+            showMiniGames();
+        }
+
+        function endGame(gameType, finalScore, achievement) {
+            clearInterval(gameTimer);
+            userStats.points += finalScore;
+            dailyUsage.gamesPlayed++;
+            updateUserStats();
+            
+            showAchievement('🎮', achievement, `You earned ${finalScore} points! Total: ${userStats.points}`);
+            
+            setTimeout(() => {
+                showMiniGames();
+            }, 3000);
+        }
+
+        // ===== REWARDS SYSTEM =====
+        
+        async function loadRewards() {
+            const sampleRewards = [
+                { name: 'Digital Sticker Pack', points: 50, emoji: '🌟', description: 'Cute digital stickers for your profile', type: 'digital' },
+                { name: 'Fidget Spinner', points: 200, emoji: '🎡', description: 'Fun fidget toy delivered to your home', type: 'physical' },
+                { name: 'Art Set', points: 300, emoji: '🎨', description: 'Complete drawing and coloring set', type: 'physical' },
+                { name: 'Science Kit', points: 500, emoji: '🧪', description: 'Build cool experiments at home', type: 'physical' }
+            ];
+            
+            const rewardsGrid = document.getElementById('rewardsGrid');
+            const digitalRewards = sampleRewards.filter(r => r.type === 'digital');
+            const physicalRewards = sampleRewards.filter(r => r.type === 'physical');
+            
+            rewardsGrid.innerHTML = `
+                <div class="col-span-full mb-8">
+                    <div class="bg-gradient-to-r from-blue-100 to-indigo-100 rounded-2xl p-6">
+                        <h4 class="text-2xl font-bold text-blue-600 mb-4">⚡ Digital Rewards</h4>
+                        <p class="text-blue-700 mb-6">Get these rewards instantly!</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            ${digitalRewards.map(reward => {
+                                const canAfford = userStats.points >= reward.points;
+                                return `
+                                    <div class="bg-white rounded-2xl p-4 text-center ${canAfford ? '' : 'opacity-60'}">
+                                        <div class="text-3xl mb-2">${reward.emoji}</div>
+                                        <h5 class="font-bold text-gray-800 mb-1">${reward.name}</h5>
+                                        <p class="text-sm text-gray-600 mb-2">${reward.description}</p>
+                                        <div class="text-lg font-bold text-blue-600 mb-2">${reward.points} points</div>
+                                        <button onclick="redeemReward('${reward.name}', ${reward.points}, '${reward.type}')" 
+                                                class="${canAfford ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-300'} w-full py-2 px-3 rounded-lg text-white font-semibold text-sm" 
+                                                ${canAfford ? '' : 'disabled'}>
+                                            ${canAfford ? '⚡ Get Now' : '🔒 Need More'}
+                                        </button>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-span-full">
+                    <div class="bg-gradient-to-r from-orange-100 to-pink-100 rounded-2xl p-6">
+                        <h4 class="text-2xl font-bold text-orange-600 mb-4">📦 Physical Rewards</h4>
+                        <p class="text-orange-700 mb-6">Real rewards mailed to your home!</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            ${physicalRewards.map(reward => {
+                                const canAfford = userStats.points >= reward.points;
+                                return `
+                                    <div class="bg-white rounded-2xl p-4 text-center ${canAfford ? '' : 'opacity-60'}">
+                                        <div class="text-3xl mb-2">${reward.emoji}</div>
+                                        <h5 class="font-bold text-gray-800 mb-1">${reward.name}</h5>
+                                        <p class="text-sm text-gray-600 mb-2">${reward.description}</p>
+                                        <div class="text-lg font-bold text-orange-600 mb-2">${reward.points} points</div>
+                                        <button onclick="redeemReward('${reward.name}', ${reward.points}, '${reward.type}')" 
+                                                class="${canAfford ? 'bg-orange-500 hover:bg-orange-600' : 'bg-gray-300'} w-full py-2 px-3 rounded-lg text-white font-semibold text-sm" 
+                                                ${canAfford ? '' : 'disabled'}>
+                                            ${canAfford ? '📦 Order Now' : '🔒 Need More'}
+                                        </button>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function redeemReward(name, points, type) {
+            if (userStats.points < points) {
+                showQuickFeedback('❌ Not enough points!', 'red');
+                return;
+            }
+            
+            if (type === 'digital') {
+                userStats.points -= points;
+                updateUserStats();
+                showAchievement('🎁', 'Reward Unlocked!', `You've earned ${name}!`);
+                loadRewards();
+            } else {
+                showParentVerificationPopup(name, points);
+            }
+        }
+
+        function showParentVerificationPopup(rewardName, points) {
+            const popup = document.createElement('div');
+            popup.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 1rem;';
+            
+            popup.innerHTML = `
+                <div class="bg-white rounded-3xl p-8 text-center max-w-md relative">
+                    <button onclick="this.parentElement.parentElement.remove()" class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-gray-600">×</button>
+                    
+                    <div class="text-6xl mb-4">📧</div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Parent Verification Required</h3>
+                    <p class="text-gray-600 mb-6">We need a parent's email to ship ${rewardName} to you!</p>
+                    
+                    <div class="text-left mb-6">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Parent's Email:</label>
+                        <input type="email" id="parentEmail" placeholder="parent@email.com" 
+                               class="w-full text-base p-3 border-2 border-gray-200 rounded-xl focus:border-blue-400">
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <button onclick="sendParentVerification('${rewardName}', ${points})" 
+                                class="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-xl font-bold">
+                            📧 Send Email
+                        </button>
+                        <button onclick="this.parentElement.parentElement.parentElement.remove()" 
+                                class="w-full bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded-xl font-semibold">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(popup);
+        }
+
+        async function sendParentVerification(rewardName, points) {
+            const emailInput = document.getElementById('parentEmail');
+            const email = emailInput.value.trim();
+            
+            if (!email || !email.includes('@')) {
+                showQuickFeedback('❌ Please enter a valid email', 'red');
+                return;
+            }
+            
+            // Create pending reward object
+            if (!userStats.reservedRewards) {
+                userStats.reservedRewards = [];
+            }
+            
+            const pendingReward = {
+                id: 'PR_' + Date.now(),
+                name: rewardName,
+                points: points,
+                type: 'physical',
+                parentEmail: email,
+                dateRequested: new Date().toISOString(),
+                expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+                status: 'pending_parent_confirmation'
+            };
+
+            // Show loading state
+            const sendButton = document.querySelector('button[onclick*="sendParentVerification"]');
+            const originalText = sendButton.textContent;
+            sendButton.textContent = '📧 Sending...';
+            sendButton.disabled = true;
+
+            try {
+                // Initialize EmailJS (only needs to be done once)
+                if (typeof emailjs !== 'undefined' && EMAILJS_CONFIG.PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
+                    emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
+                    
+                    // Prepare email template parameters
+                    const templateParams = {
+                        parent_email: email,
+                        child_name: userStats.selectedGrade ? `${userStats.selectedGrade} Student` : 'SmartBuddy User',
+                        child_email: 'child@example.com', // You can add this to user profile later
+                        reward_name: rewardName,
+                        points_cost: points,
+                        request_date: new Date().toLocaleDateString(),
+                        confirmation_link: `${window.location.origin}/confirm-reward/${pendingReward.id}`
+                    };
+                    
+                    // Send email via EmailJS
+                    const response = await emailjs.send(
+                        EMAILJS_CONFIG.SERVICE_ID,
+                        EMAILJS_CONFIG.TEMPLATE_ID,
+                        templateParams
+                    );
+                    
+                    if (response.status === 200) {
+                        // Email sent successfully
+                        userStats.reservedRewards.push(pendingReward);
+                        
+                        // Close popup
+                        document.querySelectorAll('[style*="position: fixed"]').forEach(popup => {
+                            if (popup.style.position === 'fixed') {
+                                popup.remove();
+                            }
+                        });
+                        
+                        showQuickFeedback(`📧 Email sent to ${email}! Check pending rewards in your progress.`, 'green');
+                        console.log('✅ Parent verification email sent successfully via EmailJS');
+                    } else {
+                        throw new Error('EmailJS response not successful');
+                    }
+                } else {
+                    // Fallback: EmailJS not configured or not loaded
+                    console.warn('⚠️ EmailJS not configured properly. Using simulation mode.');
+                    userStats.reservedRewards.push(pendingReward);
+                    
+                    // Close popup  
+                    document.querySelectorAll('[style*="position: fixed"]').forEach(popup => {
+                        if (popup.style.position === 'fixed') {
+                            popup.remove();
+                        }
+                    });
+                    
+                    showQuickFeedback(`📧 Email sent to ${email} (Demo mode)! Check pending rewards.`, 'green');
+                    console.log('📧 Parent verification email sent (simulated - please configure EmailJS)');
+                }
+            } catch (error) {
+                console.error('❌ Email sending failed:', error);
+                
+                // Reset button state
+                sendButton.textContent = originalText;
+                sendButton.disabled = false;
+                
+                // Show user-friendly error message
+                if (error.text && error.text.includes('Invalid template ID')) {
+                    showQuickFeedback('❌ Email template not found. Please check configuration.', 'red');
+                } else if (error.text && error.text.includes('Invalid service ID')) {
+                    showQuickFeedback('❌ Email service not configured. Please check setup.', 'red');
+                } else {
+                    showQuickFeedback('❌ Failed to send email. Please try again or contact support.', 'red');
+                }
+            }
+        }
+
+        // ===== STREAK SYSTEM =====
+        
+        function showStreakPopup() {
+            updateDailyStreak();
+            
+            const currentStreak = userStats.streak;
+            
+            document.getElementById('currentStreak').textContent = `${currentStreak} Day${currentStreak !== 1 ? 's' : ''}`;
+            
+            let streakMessage = '';
+            if (currentStreak === 0) {
+                streakMessage = 'Start your learning journey today!';
+                document.getElementById('streakMainEmoji').textContent = '🎯';
+                document.getElementById('streakTitle').textContent = 'Ready to Learn?';
+            } else if (currentStreak < 3) {
+                streakMessage = 'Great start! Keep the momentum going!';
+            } else {
+                streakMessage = 'Amazing! You\'re building a great habit!';
+            }
+            
+            document.getElementById('streakMessage').textContent = streakMessage;
+            generateStreakCalendar();
+            
+            const popup = document.getElementById('streakPopup');
+            popup.style.display = 'block';
+            
+            setTimeout(() => {
+                const learnButton = document.getElementById('streakLearnButton');
+                const prizesButton = document.getElementById('streakPrizesButton');
+                const closeButton1 = document.getElementById('closeButton1');
+                
+                if (learnButton) {
+                    learnButton.addEventListener('click', closeStreak);
+                }
+                if (prizesButton) {
+                    prizesButton.addEventListener('click', () => {
+                        closeStreak();
+                        setTimeout(() => showRewards(), 100);
+                    });
+                }
+                if (closeButton1) {
+                    closeButton1.addEventListener('click', closeStreak);
+                }
+            }, 200);
+        }
+        
+        function generateStreakCalendar() {
+            const calendar = document.getElementById('streakCalendar');
+            const dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+            const dayEmojis = ['🌸', '🦋', '🌟', '🎈', '🦄', '🍭', '🌈'];
+            
+            let calendarHtml = '';
+            
+            for (let i = 0; i < 7; i++) {
+                const isActive = i < userStats.streak;
+                
+                calendarHtml += `
+                    <div class="text-center">
+                        <div class="text-xs text-gray-600 mb-1">${dayNames[i]}</div>
+                        <div class="w-8 h-8 rounded-full ${isActive ? 'bg-orange-200 border-2 border-orange-400' : 'bg-gray-100 border-2 border-gray-200'} 
+                             flex items-center justify-center text-sm">
+                            ${isActive ? dayEmojis[i] : '○'}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            calendar.innerHTML = calendarHtml;
+        }
+        
+        function updateDailyStreak() {
+            const today = new Date().toDateString();
+            if (userStats.lastLoginDate !== today) {
+                userStats.lastLoginDate = today;
+            }
+            updateUserStats();
+        }
+        
+        function closeStreak() {
+            const popup = document.getElementById('streakPopup');
+            if (popup) {
+                popup.style.display = 'none';
+            }
+        }
+
+        // ===== SETTINGS FUNCTIONS =====
+        
+        function updateSettingsDisplay() {
+            document.querySelectorAll('.language-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-100', 'border-blue-400');
+                btn.classList.add('bg-white', 'border-blue-200');
+            });
+            
+            const selectedLangId = {
+                'english': 'langEn',
+                'traditional': 'langZhTW', 
+                'simplified': 'langZhCN'
+            }[appSettings.language];
+            
+            if (selectedLangId) {
+                const selectedBtn = document.getElementById(selectedLangId);
+                if (selectedBtn) {
+                    selectedBtn.classList.remove('bg-white', 'border-blue-200');
+                    selectedBtn.classList.add('bg-blue-100', 'border-blue-400');
+                }
+            }
+
+            updateToggle('musicToggle', appSettings.musicEnabled);
+            updateToggle('vibrationToggle', appSettings.vibrationEnabled);
+        }
+
+        function setLanguage(language) {
+            appSettings.language = language;
+            updateSettingsDisplay();
+            showQuickFeedback(`Language changed! 🌍`, 'green');
+        }
+
+        function toggleMusic() {
+            appSettings.musicEnabled = !appSettings.musicEnabled;
+            updateToggle('musicToggle', appSettings.musicEnabled);
+            showQuickFeedback(appSettings.musicEnabled ? 'Music on! 🎵' : 'Music off 🔇', appSettings.musicEnabled ? 'green' : 'red');
+        }
+
+        function toggleVibration() {
+            appSettings.vibrationEnabled = !appSettings.vibrationEnabled;
+            updateToggle('vibrationToggle', appSettings.vibrationEnabled);
+            showQuickFeedback(appSettings.vibrationEnabled ? 'Vibration on! 📳' : 'Vibration off 📵', appSettings.vibrationEnabled ? 'green' : 'red');
+        }
+
+
+
+        function updateToggle(toggleId, isEnabled) {
+            const toggle = document.getElementById(toggleId);
+            const dot = toggle.querySelector('.toggle-dot');
+            
+            if (isEnabled) {
+                toggle.classList.remove('bg-gray-400');
+                toggle.classList.add('bg-green-500');
+                dot.classList.add('translate-x-7');
+                dot.classList.remove('translate-x-1');
+            } else {
+                toggle.classList.remove('bg-green-500');
+                toggle.classList.add('bg-gray-400');
+                dot.classList.remove('translate-x-7');
+                dot.classList.add('translate-x-1');
+            }
+        }
+
+        function subscribePremium(plan = 'monthly') {
+            showQuickFeedback('🚀 Premium trial activated! (Demo)', 'green');
+            userStats.isPremium = true;
+            updateUserStats();
+        }
+
+        function openHelp() {
+            showQuickFeedback('Help center opening... 📚', 'blue');
+        }
+
+        function sendFeedback() {
+            showQuickFeedback('Feedback form opening... 💬', 'blue');
+        }
+
+        // ===== ACHIEVEMENT SYSTEM =====
+        
+        function showAchievement(emoji, title, text) {
+            const achievementPopup = document.getElementById('achievementPopup');
+            if (!achievementPopup) return;
+            
+            document.getElementById('achievementEmoji').textContent = emoji;
+            document.getElementById('achievementTitle').textContent = title;
+            document.getElementById('achievementText').textContent = text;
+            
+            achievementPopup.classList.remove('hidden');
+            achievementPopup.style.display = 'flex';
+            
+            setTimeout(() => {
+                closeAchievement();
+            }, 4000);
+        }
+
+        function closeAchievement() {
+            const popup = document.getElementById('achievementPopup');
+            if (popup) {
+                popup.classList.add('hidden');
+                popup.style.display = 'none';
+            }
+        }
+
+        // ===== PROGRESS FUNCTIONS =====
+        
+        function updateProgressDisplay() {
+            const accuracy = userStats.totalQuestionsAnswered > 0 ? 
+                Math.round((userStats.correctAnswers / userStats.totalQuestionsAnswered) * 100) : 0;
+            
+            document.getElementById('progressLevel').textContent = `Level ${userStats.level}`;
+            document.getElementById('progressPoints').textContent = `${userStats.points} Points`;
+            document.getElementById('progressStreak').textContent = `${userStats.streak} Day${userStats.streak !== 1 ? 's' : ''}`;
+            
+            document.getElementById('progressQuestionsAnswered').textContent = userStats.totalQuestionsAnswered;
+            document.getElementById('progressCorrectAnswers').textContent = userStats.correctAnswers;
+            document.getElementById('progressAccuracy').textContent = `${accuracy}%`;
+            
+            document.getElementById('progressCurrentLevel').textContent = userStats.level;
+            
+            const pointsInCurrentLevel = userStats.points % 100;
+            const nextLevelPoints = 100;
+            const progressPercent = (pointsInCurrentLevel / nextLevelPoints) * 100;
+            const pointsNeeded = nextLevelPoints - pointsInCurrentLevel;
+            
+            document.getElementById('levelProgressBar').style.width = `${progressPercent}%`;
+            document.getElementById('pointsToNextLevel').textContent = `Need ${pointsNeeded} more points for Level ${userStats.level + 1}`;
+        }
+
+        // ===== CORE FUNCTIONS =====
+        
+        function updateUserStats() {
+            const pointsEl = document.getElementById('userPoints');
+            const levelEl = document.getElementById('userLevel');
+            const streakEl = document.getElementById('streakCount');
+            
+            if (pointsEl) pointsEl.textContent = userStats.points;
+            if (levelEl) levelEl.textContent = userStats.level;
+            if (streakEl) streakEl.textContent = `${userStats.streak} day streak`;
+        }
+
+        function checkAutoLogin() {
+            try {
+                const savedUser = localStorage.getItem('smartbuddy_user');
+                if (savedUser) {
+                    const userData = JSON.parse(savedUser);
+                    if (userData.hasLoggedInBefore) {
+                        // Auto-login returning user
+                        userStats.childName = userData.childName;
+                        userStats.parentEmail = userData.parentEmail;
+                        userStats.isLoggedIn = true;
+                        userStats.hasLoggedInBefore = true;
+                        
+                        showQuickFeedback(`👋 Welcome back, ${userData.childName}!`, 'green');
+                        return true;
+                    }
+                }
+            } catch (error) {
+                console.warn('Failed to load saved user data:', error);
+            }
+            return false;
+        }
+
+        function initializeApp() {
+            console.log('🚀 Initializing SmartBuddy app...');
+            
+            // Check for auto-login first
+            const autoLoggedIn = checkAutoLogin();
+            
+            // Check if user is logged in (either auto-login or manual)
+            if (!userStats.isLoggedIn && !autoLoggedIn) {
+                showSignUp();
+                return;
+            }
+            
+            const gradeSelect = document.getElementById('gradeSelect');
+            if (gradeSelect && userStats.selectedGrade) {
+                gradeSelect.value = userStats.selectedGrade;
+            }
+            
+            updateUserStats();
+            loadRewards();
+            showWelcome();
+            
+            setTimeout(() => {
+                const achievementPopup = document.getElementById('achievementPopup');
+                if (achievementPopup) {
+                    achievementPopup.classList.add('hidden');
+                    achievementPopup.style.display = 'none';
+                }
+            }, 100);
+            
+            setTimeout(() => {
+                showStreakPopup();
+            }, 1500);
+        }
+
+        // Auto-detect dark mode
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+
+        // Initialize app when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ SmartBuddy loaded successfully');
+            
+            if (!userStats.selectedGrade) {
+                userStats.selectedGrade = 'Primary2';
+            }
+            
+            initializeApp();
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeAchievement();
+                closeStreak();
+            }
+        });
+    </script>
+</body>
+</html>
